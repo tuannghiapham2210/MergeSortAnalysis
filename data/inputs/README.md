@@ -1,31 +1,37 @@
-# Bộ dữ liệu thí nghiệm (Experimental Datasets)
+# Tập Dữ Liệu Kiểm Thử Thực Nghiệm (Experimental Datasets)
 
-Thư mục này chứa các bộ dữ liệu kiểm thử thực tế phục vụ khảo sát và đánh giá thuật toán MergeSort và cải tiến CUTOFF theo yêu cầu đề bài.
-
----
-
-## 📄 Định dạng dữ liệu (Data Format)
-Định dạng file tuân theo chuẩn giáo trình *Algorithms 4th Edition* (Robert Sedgewick & Kevin Wayne):
-* **Dòng đầu tiên:** Chứa số nguyên dương $N$ (Số lượng phần tử trong mảng).
-* **$N$ dòng tiếp theo:** Mỗi dòng chứa một số nguyên là giá trị của một phần tử.
+Thư mục này lưu trữ các bộ dữ liệu kiểm thử thực nghiệm phục vụ việc khảo sát, phân tích hiệu năng của thuật toán MergeSort và đánh giá kỹ thuật tối ưu hóa CUTOFF sang Insertion Sort theo yêu cầu của đề tài.
 
 ---
 
-## 📊 Danh sách các bộ dữ liệu mẫu trong thư mục
+## 1. Đặc Tả Định Dạng Dữ Liệu
 
-| Tên file | Kích thước $N$ | Dạng phân bố dữ liệu | Mô tả |
+Định dạng tệp dữ liệu tuân thủ quy ước chuẩn trong giáo trình *Algorithms, 4th Edition* (Robert Sedgewick & Kevin Wayne):
+* **Dòng đầu tiên:** Chứa một số nguyên dương $N$ duy nhất, biểu diễn số lượng phần tử của mảng.
+* **$N$ dòng tiếp theo:** Mỗi dòng chứa một số nguyên biểu diễn giá trị của từng phần tử trong mảng tương ứng.
+
+---
+
+## 2. Danh Mục Các Tập Dữ Liệu Mẫu
+
+| Tên tệp | Kích thước ($N$) | Phân bố dữ liệu | Mục đích thực nghiệm |
 |---|:---:|---|---|
-| `tiny.txt` | 15 | Mảng nhỏ mẫu | Dùng để chạy thử nghiệm nhanh, theo dõi từng bước chia và trộn mảng (Trace/Debug). |
-| `random_10k.txt` | 10,000 | Ngẫu nhiên đều (Uniform Random) | Các số nguyên ngẫu nhiên từ $0$ đến $10^9$, sinh với seed cố định (`42`). |
-| `sorted_10k.txt` | 10,000 | Đã sắp xếp tăng dần (Sorted) | Mảng $0, 1, 2, \dots, N-1$ (kiểm tra trường hợp tốt nhất hoặc tính ổn định). |
-| `reversed_10k.txt` | 10,000 | Giảm dần ngược chiều (Reversed) | Mảng $N-1, N-2, \dots, 0$ (trường hợp nghịch đảo tối đa). |
-| `duplicates_10k.txt` | 10,000 | Trùng lặp nhiều (Duplicates) | Các số nguyên chỉ nằm trong khoảng $[0, 99]$, có rất nhiều giá trị trùng nhau. |
+| `tiny.txt` | 15 | Mẫu kiểm chứng (Tracing test) | Sử dụng cho việc kiểm thử tính đúng đắn, debug và theo dõi chi tiết từng bước phân rã - trộn mảng. |
+| `random_10k.txt` | 10,000 | Ngẫu nhiên đều (Uniform Random) | Dữ liệu kiểm thử tổng quát, các phần tử phân bố ngẫu nhiên đều trong miền $[0, 10^9]$ với giá trị khởi tạo `seed = 42`. |
+| `sorted_10k.txt` | 10,000 | Sắp xếp tăng dần (Sorted) | Mảng có thứ tự tăng dần hoàn toàn $a[i] = i$, phục vụ khảo sát trường hợp tốt nhất và tính ổn định (stability) của thuật toán. |
+| `reversed_10k.txt` | 10,000 | Nghịch thế hoàn toàn (Reversed) | Mảng có thứ tự giảm dần hoàn toàn $a[i] = N - 1 - i$, đại diện cho trường hợp có số lượng cặp nghịch thế đạt cực đại. |
+| `duplicates_10k.txt` | 10,000 | Trùng lặp cao (High-multiplicity) | Mảng chỉ nhận các giá trị trong phạm vi hẹp $[0, 99]$, tạo ra mật độ phần tử trùng lặp cao nhằm khảo sát ảnh hưởng của các khóa bằng nhau. |
 
 ---
 
-## 🛠 Cách tái tạo hoặc sinh thêm dữ liệu mới
-Bạn có thể tự động sinh lại hoặc tạo thêm các bộ dữ liệu kích thước lớn hơn bằng lệnh:
+## 3. Quy Trình Tái Lập và Khởi Tạo Dữ Liệu
+
+Toàn bộ các tập dữ liệu trên có thể được tái lập hoàn toàn (reproducible) bằng cách thực thi lớp tiện ích `DataGenerator`:
+
 ```bash
 java -cp bin DataGenerator
 ```
-Lớp `DataGenerator.java` cũng cung cấp hai phương thức tiện ích `writeToFile()` và `readFromFile()` để đọc/ghi mảng trực tiếp từ mã nguồn Java.
+
+Lớp `DataGenerator.java` cung cấp sẵn hai phương thức tĩnh chuẩn để tương tác với dữ liệu:
+* `DataGenerator.writeToFile(Integer[] a, String filePath)`: Xuất cấu trúc mảng ra tệp theo đặc tả định dạng chuẩn.
+* `DataGenerator.readFromFile(String filePath)`: Đọc và phân giải tệp dữ liệu thành mảng đối tượng `Integer[]`.
