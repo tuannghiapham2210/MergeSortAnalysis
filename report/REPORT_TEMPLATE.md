@@ -17,11 +17,11 @@
 
 ## 2. THIẾT KẾ THÍ NGHIỆM (ALGORITHM ANALYSIS)
 ### 2.1. Cấu hình phần cứng và môi trường chạy
-- **CPU:** 
-- **RAM:** 
-- **Hệ điều hành:** 
-- **Java Virtual Machine (JVM):** 
-- **Các tham số JVM (nếu có):** 
+- **CPU:** AMD Ryzen 9 8945HX (16 Cores, 32 Threads, up to 5.2 GHz)
+- **RAM:** 32 GB
+- **Hệ điều hành:** Microsoft Windows 11 Home 64-bit
+- **Java Virtual Machine (JVM):** OpenJDK 25.0.2 LTS (Temurin-25.0.2+10, mixed mode, sharing)
+- **Python Runtime:** Python 3.13.5 (Pandas, Seaborn, Matplotlib) 
 
 ### 2.2. Dữ liệu thử nghiệm (Input Datasets)
 - **Kích thước mảng ($N$):** $10^4, 10^5, 10^6, 10^7$
