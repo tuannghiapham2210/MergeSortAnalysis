@@ -24,7 +24,7 @@ MergeSortAnalysis/
 │
 ├── src/                    # Mã nguồn thuật toán (Java)
 │   ├── Merge.java          # Cài đặt MergeSort nguyên bản theo slide
-│   ├── MergeCutoff.java    # MergeSort cải tiến có tham số CUTOFF
+│   ├── MergeWithCutoff.java# MergeSort cải tiến có tham số CUTOFF
 │   └── Insertion.java      # Cài đặt InsertionSort cho mảng con [lo, hi]
 │
 ├── benchmark/              # Các công cụ phục vụ thực nghiệm tự động
