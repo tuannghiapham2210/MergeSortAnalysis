@@ -53,7 +53,7 @@ Dưới đây là kết quả đo thực tế trên máy thử nghiệm (chạy 
 ## 4. BIỂU ĐỒ & PHÂN TÍCH KẾT QUẢ
 
 ### 4.1. Đồ thị tương quan giữa CUTOFF và Thời gian chạy
-![Đồ thị CUTOFF vs Time](figures/cutoff_vs_time.svg)
+![Đồ thị CUTOFF vs Time](figures/cutoff_vs_time.png)
 
 ### 4.2. Phân tích chi tiết kết quả thực nghiệm
 1. **So sánh với MergeSort nguyên bản (CUTOFF = 0):**
