@@ -1,7 +1,7 @@
 import os
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+import pandas as pd  # pyrefly: ignore[missing-import]
+import matplotlib.pyplot as plt  # pyrefly: ignore[missing-import]
+import seaborn as sns  # pyrefly: ignore[missing-import]
 
 def main():
     csv_file = os.path.join("data", "results", "benchmark_results.csv")
