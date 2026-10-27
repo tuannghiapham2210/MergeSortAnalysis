@@ -1,0 +1,34 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Java build artifacts
+*.class
+bin/
+out/
+target/
+*.jar
+*.war
+*.ear
+
+# IDE and Editor configs
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# OS specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Large dataset files (keep generated small samples, ignore huge inputs if needed)
+data/inputs/*.bin
+data/inputs/*.raw
+data/inputs/*.large
+
+# Logs and temp files
+*.log
+scratch/
