@@ -1,7 +1,6 @@
 # BÁO CÁO THÍ NGHIỆM: KHẢO SÁT GIÁ TRỊ CUTOFF TỐI ƯU CHO MERGESORT
-**Môn học:** Cấu trúc dữ liệu và giải thuật (DSA)  
-**Sinh viên thực hiện:** [Họ và tên] - [MSSV]  
-**Giảng viên hướng dẫn:** [Tên Thầy/Cô]  
+**Môn học:** Cấu trúc dữ liệu và giải thuật - UET.CS1058  
+**Sinh viên thực hiện:** Phạm Tuấn Nghĩa - 25021912   
 
 ---
 
