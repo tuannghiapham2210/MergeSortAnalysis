@@ -121,7 +121,7 @@ public class BenchmarkRunner {
     /**
      * Tính giá trị trung bình số học (Arithmetic Mean) của thời gian thực thi:
      * 
-     * Công thức: \bar{x} = \frac{1}{K} \sum_{i=1}^{K} x_i
+     * Công thức: Mean (x̄) = (∑ x_i) / K
      * 
      * Giúp làm mượt và giảm thiểu tác động của các sai số ngẫu nhiên trong từng lần đo đơn lẻ.
      *
@@ -137,7 +137,7 @@ public class BenchmarkRunner {
     /**
      * Tính độ lệch chuẩn (Standard Deviation) của các lần đo:
      * 
-     * Công thức: s = \sqrt{ \frac{1}{K} \sum_{i=1}^{K} (x_i - \bar{x})^2 }
+     * Công thức: StdDev (s) = √[ ∑ (x_i - x̄)² / K ]
      * 
      * Ý nghĩa thống kê:
      * - Đo lường mức độ phân tán hoặc biến động của thời gian chạy qua các lần đo độc lập.
