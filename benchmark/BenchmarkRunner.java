@@ -16,6 +16,16 @@ public class BenchmarkRunner {
     // Số lần warm-up JVM trước khi đo chính thức
     private static final int WARMUP_ROUNDS = 5;
 
+    /**
+     * Hàm điều phối toàn bộ quá trình thực nghiệm thuật toán (Algorithm Analysis):
+     * 1. Thiết lập các thông số thực nghiệm (kích thước mảng N, danh sách CUTOFF, số lần lặp trials).
+     * 2. Kích hoạt JVM Warm-up để đưa môi trường thực thi về trạng thái ổn định.
+     * 3. Tiến hành các vòng lặp đo đạc thời gian bằng System.nanoTime().
+     * 4. Tính toán các chỉ số thống kê (Thời gian trung bình và Độ lệch chuẩn).
+     * 5. In bảng kết quả ra console và ghi dữ liệu thô ra file CSV để phục vụ vẽ đồ thị.
+     *
+     * @param args tham số dòng lệnh (không sử dụng)
+     */
     public static void main(String[] args) {
         System.out.println("======================================================================");
         System.out.println(" BẮT ĐẦU THÍ NGHIỆM PHÂN TÍCH GIÁ TRỊ CUTOFF CHO MERGESORT");
@@ -88,6 +98,17 @@ public class BenchmarkRunner {
         }
     }
 
+    /**
+     * Khởi động và làm nóng máy ảo Java (JVM Warm-up):
+     * 
+     * Mục đích thực nghiệm:
+     * - Trong Java, các lần chạy đầu tiên thường bị chậm do JVM phải nạp lớp (class loading),
+     *   khởi tạo bộ nhớ và chạy ở chế độ thông dịch (interpreter mode).
+     * - Hàm này thực hiện sắp xếp thử nghiệm một số mảng phụ để kích hoạt trình biên dịch
+     *   Just-In-Time (JIT) dịch bytecode sang mã máy gốc (native code) và đưa JVM về trạng thái ổn định (steady-state).
+     * - Nhờ đó, các phép đo chính thức sau đó sẽ phản ánh chính xác hiệu năng thuật toán,
+     *   loại bỏ được sai số do hiện tượng "khởi động lạnh" (cold-start penalty) của JVM.
+     */
     private static void warmUpJVM() {
         for (int i = 0; i < WARMUP_ROUNDS; i++) {
             Integer[] arr1 = DataGenerator.generateRandom(50_000, 1000 + i);
@@ -97,12 +118,36 @@ public class BenchmarkRunner {
         }
     }
 
+    /**
+     * Tính giá trị trung bình số học (Arithmetic Mean) của thời gian thực thi:
+     * 
+     * Công thức: \bar{x} = \frac{1}{K} \sum_{i=1}^{K} x_i
+     * 
+     * Giúp làm mượt và giảm thiểu tác động của các sai số ngẫu nhiên trong từng lần đo đơn lẻ.
+     *
+     * @param values mảng chứa thời gian thực thi của các lần chạy (đơn vị: ms)
+     * @return thời gian thực thi trung bình (ms)
+     */
     private static double calculateMean(double[] values) {
         double sum = 0;
         for (double v : values) sum += v;
         return sum / values.length;
     }
 
+    /**
+     * Tính độ lệch chuẩn (Standard Deviation) của các lần đo:
+     * 
+     * Công thức: s = \sqrt{ \frac{1}{K} \sum_{i=1}^{K} (x_i - \bar{x})^2 }
+     * 
+     * Ý nghĩa thống kê:
+     * - Đo lường mức độ phân tán hoặc biến động của thời gian chạy qua các lần đo độc lập.
+     * - Độ lệch chuẩn càng nhỏ chứng tỏ phép đo càng ổn định và kết quả càng có độ tin cậy cao.
+     * - Giá trị này được sử dụng để vẽ thanh sai số (error bars) trên biểu đồ phân tích.
+     *
+     * @param values mảng chứa thời gian thực thi của các lần chạy (đơn vị: ms)
+     * @param mean thời gian thực thi trung bình đã tính
+     * @return độ lệch chuẩn của các lần đo (ms)
+     */
     private static double calculateStdDev(double[] values, double mean) {
         double sumSq = 0;
         for (double v : values) sumSq += Math.pow(v - mean, 2);
