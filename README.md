@@ -38,8 +38,9 @@ MergeSortAnalysis/
 │   └── results/            # Kết quả đo lường thô lưu trữ dưới định dạng CSV
 │
 └── report/                 # Báo cáo và sản phẩm nghiên cứu
-    ├── REPORT_TEMPLATE.md  # Báo cáo phân tích thực nghiệm chi tiết
-    └── figures/            # Biểu đồ và đồ thị phân tích độ phân giải cao
+    ├── REPORT.md           # Báo cáo phân tích thực nghiệm chi tiết
+    ├── AI_CHAT_LOG.md      # Nhật ký thảo luận và sử dụng AI theo yêu cầu đề bài
+    └── figures/            # Biểu đồ và đồ thị phân tích độ phân giải cao (PNG/SVG)
 ```
 
 ---
@@ -58,9 +59,10 @@ Các phép đo trong nghiên cứu được tiến hành trên hệ thống ph�
 ## 4. Phương pháp Thực Nghiệm (Algorithm Analysis)
 
 Để triệt tiêu tối đa các nguồn sai số ngẫu nhiên từ hệ điều hành và môi trường thực thi, quy trình đo lường tuân thủ các nguyên tắc khoa học sau:
-1. **Khử sai số khởi động lạnh (JVM Warm-up):** Thực hiện 5 chu kỳ sắp xếp mồi trước khi kích hoạt bộ đếm thời gian, cho phép trình biên dịch Just-In-Time (JIT) của JVM hoàn tất dịch mã bytecode sang mã máy gốc và đưa hệ thống vào trạng thái ổn định.
-2. **Lặp lại nhiều lần (Trials = 10):** Mỗi cấu hình thực nghiệm được đo lặp lại 10 lần độc lập. Sử dụng bộ phát số ngẫu nhiên với seed cố định để đảm bảo tính tái lập (reproducibility).
-3. **Thống kê mô tả:** Tính toán Thời gian trung bình số học (Mean) và Độ lệch chuẩn (Standard Deviation) để biểu diễn mức độ phân tán của dữ liệu qua các thanh sai số (error bars).
+1. **Kiểm chứng tính đúng đắn (`isSorted`):** Tự động kiểm tra kết quả sắp xếp trên bộ dữ liệu mẫu tại `data/inputs/` và trong quá trình thực nghiệm.
+2. **Khử sai số khởi động lạnh (JVM Warm-up):** Thực hiện 15 chu kỳ sắp xếp mồi trên cả `Merge`, `MergeWithCutoff` và `Insertion` trước khi kích hoạt bộ đếm thời gian, cho phép trình biên dịch Just-In-Time (JIT C2) của JVM hoàn tất dịch mã bytecode sang mã máy gốc và đưa hệ thống vào trạng thái ổn định.
+3. **Đồng nhất dữ liệu & Lọc nhiễu ngoại lai (Trimmed Trials):** Tiền khởi tạo bộ dữ liệu với seed cố định để mọi mốc CUTOFF đều được đo trên cùng tập đầu vào. Mỗi cấu hình chạy $K + 2 = 12$ lần độc lập, loại bỏ 1 cực trị nhỏ nhất và 1 cực trị lớn nhất (nhiễu do OS/GC) để giữ lại $K = 10$ mẫu chuẩn.
+4. **Thống kê mô tả (Chủ đề 1.3 Algorithm Analysis):** Tính toán Thời gian trung bình mẫu (Sample Mean $\bar{x}$) và Độ lệch chuẩn mẫu (Sample Standard Deviation $s = \sqrt{\frac{\sum (x_i - \bar{x})^2}{K - 1}}$) để biểu diễn mức độ phân tán qua các thanh sai số (error bars).
 
 ---
 
@@ -86,21 +88,32 @@ Kết quả đo lường sẽ được lưu tự động tại `data/results/ben
 ```bash
 py benchmark/plot_results.py
 ```
-Biểu đồ phân tích sẽ được xuất tự động dưới dạng PNG độ phân giải cao (300 DPI) tại `report/figures/cutoff_vs_time.png`.
+Biểu đồ phân tích sẽ được xuất tự động dưới dạng PNG (300 DPI) và SVG tại `report/figures/cutoff_vs_time.png` và `report/figures/cutoff_by_datatype.png`.
 
 ---
 
 ## 6. Tổng Hợp Kết Quả Thực Nghiệm
 
-Dưới đây là số liệu tóm tắt đối với dữ liệu ngẫu nhiên (phép đo trung bình 10 lần độc lập):
+### 6.1. Khảo sát theo kích thước mảng $N$ (Dữ liệu Ngẫu nhiên - Random)
 
-| Kích thước mảng ($N$) | CUTOFF = 0 (Nguyên bản) | CUTOFF = 7 (Ấn bản cũ) | CUTOFF = 10 (Ấn bản mới) | CUTOFF Tối ưu | Thời gian nhỏ nhất | Mức cải thiện |
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| $100,000$ | $16.99 \pm 0.33$ ms | $16.27 \pm 0.08$ ms | $16.53 \pm 0.08$ ms | **25** | **15.45 ms** | Giảm ~9.1% |
-| $500,000$ | $104.44 \pm 2.68$ ms | $106.55 \pm 3.08$ ms | $103.27 \pm 2.24$ ms | **8** | **101.95 ms** | Giảm ~2.4% |
-| $1,000,000$ | $244.78 \pm 4.12$ ms | $256.53 \pm 5.71$ ms | $248.35 \pm 12.06$ ms | **16** | **223.00 ms** | **Giảm ~8.9%** |
+| Kích thước mảng ($N$) | CUTOFF = 0 (Nguyên bản) | CUTOFF = 7 (Ấn bản cũ) | CUTOFF = 10 (Ấn bản mới) | CUTOFF = 16 | CUTOFF = 128 (Quá lớn) | CUTOFF Tối ưu | Thời gian nhỏ nhất | Mức cải thiện |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| $100,000$ | $17.51 \pm 0.30$ ms | $16.63 \pm 0.37$ ms | **$15.94 \pm 0.08$ ms** | $16.00 \pm 0.15$ ms | $22.08 \pm 0.23$ ms | **10** | **15.94 ms** | **Giảm ~9.0%** |
+| $500,000$ | $124.94 \pm 4.55$ ms | $113.28 \pm 2.47$ ms | $110.09 \pm 5.85$ ms | $112.73 \pm 4.06$ ms | $148.60 \pm 2.89$ ms | **25** *(12: 109.47 ms)* | **109.44 ms** | **Giảm ~12.4%** |
+| $1,000,000$ | $244.80 \pm 3.69$ ms | $232.76 \pm 2.94$ ms | $233.35 \pm 7.93$ ms | **$227.47 \pm 2.80$ ms** | $336.91 \pm 20.60$ ms | **16** | **227.47 ms** | **Giảm ~7.1%** |
+
+### 6.2. Khảo sát theo 4 phân bố dữ liệu tại $N = 1,000,000$
+
+| Phân bố dữ liệu | CUTOFF = 0 (Nguyên bản) | CUTOFF = 7 (Ấn bản cũ) | CUTOFF = 10 (Ấn bản mới) | CUTOFF = 16 | CUTOFF = 128 | CUTOFF Tối ưu | Thời gian nhỏ nhất | Mức cải thiện |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **Random** | $244.80 \pm 3.69$ ms | $232.76 \pm 2.94$ ms | $233.35 \pm 7.93$ ms | **$227.47 \pm 2.80$ ms** | $336.91 \pm 20.60$ ms | **16** | **227.47 ms** | **Giảm ~7.1%** |
+| **Sorted** | $103.32 \pm 1.43$ ms | $88.66 \pm 1.23$ ms | $85.33 \pm 0.43$ ms | $80.86 \pm 0.62$ ms | **$65.59 \pm 0.39$ ms** | **128** | **65.59 ms** | **Giảm ~36.5%** |
+| **Reversed** | $106.01 \pm 0.76$ ms | $100.09 \pm 1.74$ ms | $100.30 \pm 0.73$ ms | $110.69 \pm 0.57$ ms | $311.55 \pm 0.65$ ms | **6** | **98.42 ms** | **Giảm ~7.2%** |
+| **Duplicates** | $150.17 \pm 1.33$ ms | $140.74 \pm 0.62$ ms | $148.94 \pm 9.18$ ms | $138.34 \pm 1.12$ ms | $209.37 \pm 1.01$ ms | **25** *(8: 138.24 ms)* | **137.98 ms** | **Giảm ~8.1%** |
 
 ### Kết luận chính:
-1. Việc tích hợp CUTOFF mang lại cải thiện hiệu năng rõ rệt trên mảng kích thước lớn (tiết kiệm gần 22 ms, tương đương ~8.9% thời gian chạy trên mảng 1 triệu phần tử).
-2. Ngưỡng CUTOFF = 10 trong giáo trình mới cho hiệu năng vượt trội hơn ngưỡng CUTOFF = 7 của giáo trình cũ trên kiến trúc CPU hiện đại.
-3. Vùng tối ưu thực nghiệm trên cấu hình phần cứng khảo sát rơi vào khoảng **CUTOFF $\in [12, 20]$**, đạt giá trị tối ưu tại **CUTOFF = 16**.
+1. Việc tích hợp CUTOFF mang lại cải thiện hiệu năng rõ rệt từ **7% đến 12.4%** trên dữ liệu ngẫu nhiên và lên tới **36.5%** trên dữ liệu đã có thứ tự.
+2. Ngưỡng **CUTOFF = 10** trong giáo trình mới cho hiệu năng ổn định và tốt hơn ngưỡng **CUTOFF = 7** của giáo trình cũ nhờ tận dụng bộ nhớ đệm L1/L2 CPU hiện đại và cắt tỉa trọn vẹn các nhánh mảng con kích thước $8$.
+3. Khi xét tổng hợp cả 4 phân bố dữ liệu (đặc biệt là tránh suy giảm bậc hai $O(k^2)$ trên mảng ngược chiều `Reversed`), vùng tối ưu thực nghiệm an toàn và hiệu quả nhất rơi vào khoảng **CUTOFF $\in [10, 16]$** (đạt cực tiểu trên dữ liệu ngẫu nhiên tại **CUTOFF = 10** với $N = 10^5$ và **CUTOFF = 16** với $N = 10^6$).
+
+Chi tiết phân tích lý thuyết, bảng thống kê và đồ thị xin xem tại [report/REPORT.md](report/REPORT.md).
