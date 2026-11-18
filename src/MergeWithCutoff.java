@@ -2,6 +2,7 @@
  * Cài đặt MergeSort cải tiến với CUTOFF sang InsertionSort cho mảng nhỏ
  * Theo hướng dẫn của GS. Robert Sedgewick (Algorithms 4th Edition)
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class MergeWithCutoff {
 
     private static void merge(Comparable[] a, Comparable[] aux, int lo, int mid, int hi) {

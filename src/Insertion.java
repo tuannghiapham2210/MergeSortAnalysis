@@ -4,6 +4,7 @@
  * 
  * Hỗ trợ sắp xếp trên một đoạn con a[lo..hi].
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class Insertion {
 
     // Sắp xếp đoạn con a[lo..hi]

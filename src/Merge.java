@@ -2,6 +2,7 @@
  * Cài đặt MergeSort nguyên bản theo slide bài giảng của GS. Robert Sedgewick
  * (Algorithms 4th Edition - Robert Sedgewick & Kevin Wayne)
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class Merge {
 
     private static void merge(Comparable[] a, Comparable[] aux, int lo, int mid, int hi) {
